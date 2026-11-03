@@ -1,3 +1,4 @@
+
 pipeline {
     agent any
 
@@ -6,13 +7,15 @@ pipeline {
         disableConcurrentBuilds()
     }
 
-   environment {
-    IMAGE_NAME = 'devopsflow-cicd'
-    IMAGE_TAG = 'v1'
-    CONTAINER_NAME = 'devopsflow-app'
-    APP_PORT = '5000'
-}
+    environment {
+        IMAGE_NAME     = 'devopsflow-cicd'
+        IMAGE_TAG      = 'v1'
+        CONTAINER_NAME = 'devopsflow-app'
+        APP_PORT       = '5000'
+    }
+
     stages {
+
         stage('Checkout') {
             steps {
                 echo 'Checking out application source code'
@@ -23,7 +26,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat '''
-                    "%PYTHON%" -m pip install -r requirements.txt
+                    py -3 -m pip install -r requirements.txt
                 '''
             }
         }
@@ -31,7 +34,7 @@ pipeline {
         stage('Run Automated Tests') {
             steps {
                 bat '''
-                    "%PYTHON%" -m pytest -v
+                    py -3 -m pytest -v
                 '''
             }
         }
@@ -66,6 +69,7 @@ pipeline {
         success {
             echo 'DevOpsFlow CI/CD Pipeline completed successfully.'
         }
+
         failure {
             echo 'CI/CD Pipeline failed. Check the stage logs.'
         }
