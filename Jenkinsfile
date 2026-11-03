@@ -6,14 +6,12 @@ pipeline {
         disableConcurrentBuilds()
     }
 
-    environment {
-        IMAGE_NAME = 'devopsflow-cicd'
-        IMAGE_TAG = 'v1'
-        CONTAINER_NAME = 'devopsflow-app'
-        APP_PORT = '5000'
-        PYTHON = 'C:\Users\subas\AppData\Local\Python\pythoncore-3.14-64\python.exe'
-    }
-
+   environment {
+    IMAGE_NAME = 'devopsflow-cicd'
+    IMAGE_TAG = 'v1'
+    CONTAINER_NAME = 'devopsflow-app'
+    APP_PORT = '5000'
+}
     stages {
         stage('Checkout') {
             steps {
