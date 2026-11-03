@@ -8,14 +8,14 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME     = 'devopsflow-cicd'
-        IMAGE_TAG      = 'v1'
+        IMAGE_NAME = 'devopsflow-cicd'
+        IMAGE_TAG = 'v1'
         CONTAINER_NAME = 'devopsflow-app'
-        APP_PORT       = '5000'
+        APP_PORT = '5000'
+        PYTHON_EXE = 'C:/Users/subas/AppData/Local/Python/pythoncore-3.14-64/python.exe'
     }
 
     stages {
-
         stage('Checkout') {
             steps {
                 echo 'Checking out application source code'
@@ -26,7 +26,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 bat '''
-                    py -3 -m pip install -r requirements.txt
+                    "%PYTHON_EXE%" -m pip install -r requirements.txt
                 '''
             }
         }
@@ -34,7 +34,7 @@ pipeline {
         stage('Run Automated Tests') {
             steps {
                 bat '''
-                    py -3 -m pytest -v
+                    "%PYTHON_EXE%" -m pytest -v
                 '''
             }
         }
@@ -69,9 +69,9 @@ pipeline {
         success {
             echo 'DevOpsFlow CI/CD Pipeline completed successfully.'
         }
-
         failure {
             echo 'CI/CD Pipeline failed. Check the stage logs.'
         }
     }
 }
+
