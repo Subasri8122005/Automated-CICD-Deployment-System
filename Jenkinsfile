@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -18,32 +17,31 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out application source code'
                 checkout scm
+            }
+        }
+
+        stage('Check Python') {
+            steps {
+                bat '"%PYTHON_EXE%" --version'
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                bat '''
-                    "%PYTHON_EXE%" -m pip install -r requirements.txt
-                '''
+                bat '"%PYTHON_EXE%" -m pip install -r requirements.txt'
             }
         }
 
         stage('Run Automated Tests') {
             steps {
-                bat '''
-                    "%PYTHON_EXE%" -m pytest -v
-                '''
+                bat '"%PYTHON_EXE%" -m pytest -v'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                bat '''
-                    docker build -t %IMAGE_NAME%:%IMAGE_TAG% .
-                '''
+                bat 'docker build -t %IMAGE_NAME%:%IMAGE_TAG% .'
             }
         }
 
@@ -59,7 +57,7 @@ pipeline {
         stage('Application Health Check') {
             steps {
                 bat '''
-                    powershell -NoProfile -ExecutionPolicy Bypass -Command "$ErrorActionPreference='Stop'; for ($i=0; $i -lt 10; $i++) { try { $r=Invoke-RestMethod 'http://localhost:5000/health'; if ($r.status -eq 'healthy') { Write-Output 'Application health check passed'; exit 0 } } catch {}; Start-Sleep -Seconds 2 }; Write-Error 'Health check failed'; exit 1"
+                    powershell -NoProfile -Command "$ErrorActionPreference='Stop'; for ($i=0; $i -lt 10; $i++) { try { $r=Invoke-RestMethod 'http://localhost:5000/health'; if ($r.status -eq 'healthy') { Write-Output 'Health check passed'; exit 0 } } catch {}; Start-Sleep -Seconds 2 }; Write-Error 'Health check failed'; exit 1"
                 '''
             }
         }
@@ -67,11 +65,10 @@ pipeline {
 
     post {
         success {
-            echo 'DevOpsFlow CI/CD Pipeline completed successfully.'
+            echo 'CI/CD Pipeline completed successfully.'
         }
         failure {
-            echo 'CI/CD Pipeline failed. Check the stage logs.'
+            echo 'Pipeline failed. Check the failed stage.'
         }
     }
 }
-
